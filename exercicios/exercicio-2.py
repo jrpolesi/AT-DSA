@@ -32,6 +32,7 @@ def selection_sort(arr):
             comparisons += 1
             if arr[j] < arr[min_index]:
                 min_index = j
+
         if min_index != i:
             arr[i], arr[min_index] = arr[min_index], arr[i]
             copies += 3
@@ -45,15 +46,18 @@ def insertion_sort(arr):
     copies = 0
 
     for i in range(1, n):
-        copies += 1
-
         key = arr[i]
+        copies += 1
         j = i - 1
-        while (j >= 0) and (arr[j] > key):
+
+        while j >= 0:
             comparisons += 1
-            copies += 1
-            arr[j + 1] = arr[j]
-            j -= 1
+            if arr[j] > key:
+                arr[j + 1] = arr[j]
+                copies += 1
+                j -= 1
+            else:
+                break
 
         arr[j + 1] = key
         copies += 1
@@ -133,6 +137,7 @@ class BST:
         result = []
         stack = []
         node = self.root
+
         while stack or node:
             self.traversal_calls += 1
             if node:
@@ -142,6 +147,7 @@ class BST:
                 node = stack.pop()
                 result.append(node.value)
                 node = node.right
+
         return result
 
 
@@ -164,17 +170,19 @@ def generate_reversed_array(n):
 def generate_nearly_sorted_array(n):
     arr = list(range(n))
     num_swaps = max(1, n // 20)
+
     for _ in range(num_swaps):
         i, j = random.sample(range(n), 2)
         arr[i], arr[j] = arr[j], arr[i]
+
     return arr
 
 
 def generate_random_array(n):
-    return [random.randint(0, n * 10) for _ in range(n)]
+    return random.sample(range(n * 10), n)
 
 
-sizes = [1000, 10_000, 25_000, 50_000, 100_000]
+sizes = [1000, 10_000, 25_000, 50_000]
 patterns = ["ordenado", "reverso", "quase ordenado", "aleatório"]
 
 algorithms = [
@@ -196,16 +204,19 @@ for n in sizes:
 
     for pattern in patterns:
         results = []
+
         for algo_name, func in algorithms:
             arr = arrays[pattern][:]
             _, comp, extra = func(arr)
             results.append((algo_name, comp, extra))
 
         print(f"\n{pattern}:")
+
         print("resultado por comparação")
         sorted_by_comp = sorted(results, key=lambda x: x[1])
         for i, (algo_name, comp, _) in enumerate(sorted_by_comp, start=1):
             print(f"{i}. {algo_name}: {comp}")
+
         print("\nresultado por cópia")
         sorted_by_copies = sorted(results, key=lambda x: x[2])
         for i, (algo_name, _, extra) in enumerate(sorted_by_copies, start=1):
